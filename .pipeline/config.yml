@@ -1,0 +1,62 @@
+###
+# This file configures the project "Piper" pipeline of your project.
+# For a reference of the configuration concept and available options, please have a look into its documentation.
+#
+# The documentation for the most recent pipeline version can always be found at:
+#    https://sap.github.io/jenkins-library/
+#
+# This is a YAML-file. YAML is an indentation-sensitive file format. Please make sure to properly indent changes to it.
+###
+
+
+
+### General project setup
+---
+general:
+  buildTool: "mta"
+stages:
+  Build:
+    mavenExecuteStaticCodeChecks: false
+    npmExecuteLint: true
+  Additional Unit Tests:
+    npmExecuteScripts: false
+    karmaExecuteTests: false
+  Acceptance:
+    cloudFoundryDeploy: false
+    cfApiEndpoint: "https://api.cf.us10-001.hana.ondemand.com"
+    cfOrg: "cfndev"
+    cfSpace: "dev"
+    cfAppName: "app"
+    cfCredentialsId: "deploy-to-cf"
+    uiVeri5ExecuteTests: false
+
+  Compliance:
+    sonarExecuteScan: true 
+    serverUrl: "https://sonarcloud.io"                                                   
+    organization: "sonaliraut01"                                 
+    projectKey: "SonaliRaut01_app"                                  
+    sonarTokenCredentialsId: "sonar-token"
+
+  Release:
+    cloudFoundryDeploy: true
+    cfApiEndpoint: "https://api.cf.us10-001.hana.ondemand.com"
+    cfOrg: "cfndev"
+    cfSpace: "dev"
+    cfAppName: "app"
+    cfCredentialsId: "deploy-to-cf"
+    tmsUpload: true
+  
+
+steps:
+  artifactPrepareVersion:
+    versioningType: "cloud_noTag"
+
+  npmExecuteLint:
+    failOnError: true
+
+  cloudFoundryDeploy:
+    mtaDeployParameters: "-f --version-rule ALL"
+
+  tmsUpload:
+    nodeName: "qa"
+    credentialsId: "tms-sk"
